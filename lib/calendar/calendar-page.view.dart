@@ -1,5 +1,5 @@
 import 'package:calendar/calendar/calendar-page.viewmodel.dart';
-import 'package:calendar/calendar/day/calendar-day.view.dart';
+import 'package:calendar/calendar/content/calendar-day.view.dart';
 import 'package:calendar/cubit/datetime-cubit.dart';
 import 'package:calendar/service/resolution.service.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class CalendarPageView extends StatelessWidget {
-
   CalendarPageView(): viewModel = CalendarPageViewModel();
 
   final CalendarPageViewModel viewModel;

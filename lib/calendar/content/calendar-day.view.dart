@@ -1,5 +1,5 @@
-import 'package:calendar/calendar/day/calendar-day.viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:calendar/calendar/content/calendar-day.viewmodel.dart';
 
 
 class CalendarDayView extends StatelessWidget {
