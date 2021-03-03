@@ -21,22 +21,37 @@ class CalendarPageView extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.black,
         body: _getBody(context),
       ),
     );
   }
 
   Widget _getBody(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _getYearAndMonth(),
-          _getDayOfWeek(),
-          _getDays(context),
-          Expanded(child: Container())
-        ],
-      ),
+    return Column(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white38,
+                borderRadius: BorderRadius.all(Radius.circular(20))
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _getYearAndMonth(),
+                _getDayOfWeek(),
+                _getDays(context),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+            flex: 1,
+            child: Container()
+        ),
+      ],
     );
   }
 
@@ -47,7 +62,11 @@ class CalendarPageView extends StatelessWidget {
         builder: (context, dateTime) {
           return Container(
             child: Text(
-              '${dateTime.month}월 ${dateTime.year}년'
+              '${dateTime.month}월 ${dateTime.year}년',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 23
+              ),
             ),
           );
         },
@@ -62,15 +81,14 @@ class CalendarPageView extends StatelessWidget {
             child: Text(
               DAY_OF_WEEKS[index],
               style: TextStyle(
-                fontSize: ResolutionService().getSp(25),
-                // color: _viewModel.getColor(index),
+                fontSize: ResolutionService().getSp(30),
+                color: viewModel.getColor(index),
               ),
             ),
           ),
         ));
 
     return Container(
-      color: Colors.blue,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
           mainAxisSize: MainAxisSize.max,
@@ -81,7 +99,6 @@ class CalendarPageView extends StatelessWidget {
 
   Widget _getDays(BuildContext context) {
     return Expanded(
-      flex: 2,
       child: PageView.builder(
         scrollDirection: Axis.horizontal,
         controller: _pageController,

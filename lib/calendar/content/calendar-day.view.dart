@@ -27,15 +27,15 @@ class CalendarDayView extends StatelessWidget {
           final int day = index - indexedFirstWeekDay + 1;
 
           if (indexedFirstWeekDay > index) {
-            return _getDayItem(prevDayOfMonth++, color: Colors.grey);
+            return _getDayItem(prevDayOfMonth++, opacity: 0.5);
           } else if (index > lastDayOfMonth + indexedFirstWeekDay - 1) {
-            return _getDayItem(nextDayOfMonth++, color: Colors.grey);
+            return _getDayItem(nextDayOfMonth++, opacity: 0.5);
           }
 
           final weekDay = viewModel.weekDay(day: day);
           final Color textColor = weekDay == DateTime.sunday
               ? Colors.red : weekDay == DateTime.saturday
-              ? Colors.blue : Colors.black;
+              ? Colors.blue : Colors.white;
 
           return _getDayItem(
               day,
@@ -51,21 +51,20 @@ class CalendarDayView extends StatelessWidget {
   }
 
   _getDayItem(int day, {
-    Color color = Colors.transparent,
     Color borderColor = Colors.transparent,
-    Color textColor = Colors.black,
+    Color textColor = Colors.white,
+    double opacity = 1,
   }) {
     return Container(
       decoration: BoxDecoration(
-          color: color,
           border: Border.all(color: borderColor, width: 3)
       ),
       alignment: Alignment.topCenter,
       child: Text(
         '$day',
         style: TextStyle(
-            color: textColor,
-            fontSize: 15
+            color: textColor.withOpacity(opacity),
+            fontSize: 15,
         ),
       ),
     );
