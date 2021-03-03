@@ -1,4 +1,5 @@
 import 'package:calendar/calendar/calendar-page.viewmodel.dart';
+import 'package:calendar/calendar/day/calendar-day.view.dart';
 import 'package:calendar/cubit/datetime-cubit.dart';
 import 'package:calendar/service/resolution.service.dart';
 import 'package:flutter/material.dart';
@@ -7,28 +8,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CalendarPageView extends StatelessWidget {
 
-  CalendarPageViewModel _viewModel;
+  CalendarPageView(): viewModel = CalendarPageViewModel();
+
+  final CalendarPageViewModel viewModel;
+  final int initialPage = 999;
+
+  PageController _pageController;
 
   @override
   Widget build(BuildContext context) {
-    _viewModel ??= CalendarPageViewModel(context.read<DateTimeCubit>().value);
+    _pageController = PageController(initialPage: initialPage);
     ResolutionService().init(context);
 
     return SafeArea(
       child: Scaffold(
-        body: _getBody(),
+        body: _getBody(context),
       ),
     );
   }
 
-  Widget _getBody() {
+  Widget _getBody(BuildContext context) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _getYearAndMonth(),
           _getDayOfWeek(),
-          _getDays(),
+          _getDays(context),
         ],
       ),
     );
@@ -73,35 +79,23 @@ class CalendarPageView extends StatelessWidget {
     );
   }
 
-  Widget _getDays() {
-    final weekDay = _viewModel.itemIndexWeekDay;
-    final lastDayOfMonth = _viewModel.currentLastDayOfMonth;
-    int prevDayOfMonth = _viewModel.prevLastDayOfMonth - weekDay + 1;
-    int nextDayOfMonth = _viewModel.nextMonthFirstDay;
+  Widget _getDays(BuildContext context) {
+    return Expanded(
+      child: PageView.builder(
+        scrollDirection: Axis.horizontal,
+        controller: _pageController,
+        itemBuilder: (context, index) {
+          final int value = index - initialPage;
+          final dateTime = viewModel.getDateTime(month: value);
 
-    return Container(
-      child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: _viewModel.daysPerWeek,
-          ),
-          itemBuilder: (context, index) {
-            if(weekDay > index) return _getDayItem(prevDayOfMonth++, color: Colors.grey);
-            else if(index > lastDayOfMonth) return _getDayItem(nextDayOfMonth++, color: Colors.grey);
-            return _getDayItem(index - weekDay + 1);
-          },
-        itemCount: TOTAL_CALENDAR_DAY_COUNT,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-      ),
-    );
-  }
+          return CalendarDayView(dateTime);
+        },
+        onPageChanged: (page) {
+          final int value = page - initialPage;
+          final dateTime = viewModel.getDateTime(month: value);
 
-  _getDayItem(int day, {Color color = Colors.transparent}) {
-    return Container(
-      alignment: Alignment.topCenter,
-      color: color,
-      child: Text(
-        '$day'
+          context.read<DateTimeCubit>().dateTime = dateTime;
+        },
       ),
     );
   }
