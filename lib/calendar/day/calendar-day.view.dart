@@ -13,9 +13,9 @@ class CalendarDayView extends StatelessWidget {
   }
 
   Widget _buildUI() {
-    final weekDay = viewModel.itemIndexWeekDay;
+    final indexedFirstWeekDay = viewModel.indexedFirstWeekDay;
     final lastDayOfMonth = viewModel.currentLastDayOfMonth;
-    int prevDayOfMonth = viewModel.prevLastDayOfMonth - weekDay + 1;
+    int prevDayOfMonth = viewModel.prevLastDayOfMonth - indexedFirstWeekDay + 1;
     int nextDayOfMonth = viewModel.nextMonthFirstDay;
 
     return Container(
@@ -24,15 +24,24 @@ class CalendarDayView extends StatelessWidget {
           crossAxisCount: viewModel.daysPerWeek,
         ),
         itemBuilder: (context, index) {
-          final day = index - weekDay + 1;
+          final int day = index - indexedFirstWeekDay + 1;
 
-          if(weekDay > index) {
+          if (indexedFirstWeekDay > index) {
             return _getDayItem(prevDayOfMonth++, color: Colors.grey);
-          } else if(index > lastDayOfMonth + weekDay - 1) {
+          } else if (index > lastDayOfMonth + indexedFirstWeekDay - 1) {
             return _getDayItem(nextDayOfMonth++, color: Colors.grey);
           }
 
-          return _getDayItem(day, borderColor: day == viewModel.currentDay ? Colors.yellow : Colors.transparent);
+          final weekDay = viewModel.weekDay(day: day);
+          final Color textColor = weekDay == DateTime.sunday
+              ? Colors.red : weekDay == DateTime.saturday
+              ? Colors.blue : Colors.black;
+
+          return _getDayItem(
+              day,
+              borderColor: day == viewModel.currentDay ? Colors.yellow : Colors.transparent,
+              textColor: textColor
+          );
         },
         itemCount: TOTAL_CALENDAR_DAY_COUNT,
         shrinkWrap: true,
@@ -41,14 +50,24 @@ class CalendarDayView extends StatelessWidget {
     );
   }
 
-  _getDayItem(int day, {Color color = Colors.transparent, Color borderColor = Colors.transparent}) {
+  _getDayItem(int day, {
+    Color color = Colors.transparent,
+    Color borderColor = Colors.transparent,
+    Color textColor = Colors.black,
+  }) {
     return Container(
       decoration: BoxDecoration(
-        color: color,
-        border: Border.all(color: borderColor, width: 3)
+          color: color,
+          border: Border.all(color: borderColor, width: 3)
       ),
       alignment: Alignment.topCenter,
-      child: Text('$day'),
+      child: Text(
+        '$day',
+        style: TextStyle(
+            color: textColor,
+            fontSize: 15
+        ),
+      ),
     );
   }
 }

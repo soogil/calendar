@@ -12,16 +12,16 @@ class CalendarDayViewModel {
   DateTime _currentDateTime;
   DateTime _nextDateTime;
 
-  int _getWeekDay(DateTime dateTime) => DateTime(dateTime.year, dateTime.month, 1).weekday;
+  int weekDay({int day = 1}) => DateTime(_currentDateTime.year, _currentDateTime.month, day).weekday;
   int _lastDayOfMonth(DateTime dateTime) => DateTime(dateTime.year, dateTime.month + 1, 0).day;
 
   int get currentDay => _currentDateTime.day;
 
   int get daysPerWeek => DateTime.daysPerWeek;
 
-  int get itemIndexWeekDay => weekDay == 7 ? 0 : weekDay;
+  int get indexedFirstWeekDay => _firstWeekDay == 7 ? 0 : _firstWeekDay;
 
-  int get weekDay => _getWeekDay(_currentDateTime);
+  int get _firstWeekDay => weekDay();
 
   int get nextMonthFirstDay => _nextDateTime.day;
 
