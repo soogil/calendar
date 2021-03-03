@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 void main() {
-  runApp(MyApp());
+  runApp(CalendarApp());
 }
 
-class MyApp extends StatelessWidget {
+class CalendarApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
