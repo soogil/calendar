@@ -35,6 +35,7 @@ class CalendarPageView extends StatelessWidget {
           _getYearAndMonth(),
           _getDayOfWeek(),
           _getDays(context),
+          Expanded(child: Container())
         ],
       ),
     );
@@ -81,6 +82,7 @@ class CalendarPageView extends StatelessWidget {
 
   Widget _getDays(BuildContext context) {
     return Expanded(
+      flex: 2,
       child: PageView.builder(
         scrollDirection: Axis.horizontal,
         controller: _pageController,
