@@ -1,16 +1,5 @@
-# calendar
+# Calendar
 
-A new Flutter application.
+<img src="https://user-images.githubusercontent.com/78334483/109808208-2c819700-7c6a-11eb-8c60-be9c98a68b8b.gif"  width="400" height="700">
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+현재는 위와같이 스와이프를 사용해 넘기는 기능만 넣었고, 더 추가할 예정입니다.
