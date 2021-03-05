@@ -1,7 +1,7 @@
 import 'package:calendar/calendar/calendar-page.viewmodel.dart';
 import 'package:calendar/calendar/content/calendar-day.view.dart';
+import 'package:calendar/calendar/content/calendar-day.viewmodel.dart';
 import 'package:calendar/cubit/datetime-cubit.dart';
-import 'package:calendar/service/resolution.service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +17,6 @@ class CalendarPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _pageController = PageController(initialPage: initialPage);
-    ResolutionService().init(context);
 
     return SafeArea(
       child: Scaffold(
@@ -81,7 +80,7 @@ class CalendarPageView extends StatelessWidget {
             child: Text(
               DAY_OF_WEEKS[index],
               style: TextStyle(
-                fontSize: ResolutionService().getSp(30),
+                fontSize: 17,
                 color: viewModel.getColor(index),
               ),
             ),
@@ -106,7 +105,17 @@ class CalendarPageView extends StatelessWidget {
           final int value = index - initialPage;
           final dateTime = viewModel.getDateTime(month: value);
 
-          return CalendarDayView(dateTime);
+          return CalendarDayView(
+            dateTime: dateTime,
+            onChangeSelectedMonth: (calendarMonth) {
+              print(calendarMonth);
+              if(calendarMonth == CalendarMonth.NEXT) {
+                _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
+              } else {
+                _pageController.previousPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
+              }
+            },
+          );
         },
         onPageChanged: (page) {
           final int value = page - initialPage;

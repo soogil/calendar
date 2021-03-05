@@ -1,6 +1,12 @@
 
 const TOTAL_CALENDAR_DAY_COUNT = 42;
 
+enum CalendarMonth {
+  PREV,
+  CURRENT,
+  NEXT,
+}
+
 class CalendarDayViewModel {
   CalendarDayViewModel(DateTime dateTime) {
     _currentDateTime = dateTime;
@@ -12,7 +18,10 @@ class CalendarDayViewModel {
   DateTime _currentDateTime;
   DateTime _nextDateTime;
 
+  DateTime selectedDate(int day) => _currentDateTime = DateTime(_currentDateTime.year, _currentDateTime.month, day);
+
   int weekDay({int day = 1}) => DateTime(_currentDateTime.year, _currentDateTime.month, day).weekday;
+
   int _lastDayOfMonth(DateTime dateTime) => DateTime(dateTime.year, dateTime.month + 1, 0).day;
 
   int get currentDay => _currentDateTime.day;
@@ -28,4 +37,6 @@ class CalendarDayViewModel {
   int get prevLastDayOfMonth => _lastDayOfMonth(_prevDateTime);
 
   int get currentLastDayOfMonth => _lastDayOfMonth(_currentDateTime);
+
+  DateTime get currentDate => _currentDateTime;
 }
