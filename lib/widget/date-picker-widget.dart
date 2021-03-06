@@ -12,6 +12,7 @@ class DatePicker extends StatefulWidget {
     this.useMagnifier = true,
     this.isVisibleDay = true,
     this.lengthOfYear = 100,
+    this.height = 300,
   }) : this.initDateTime = initDateTime ?? DateTime.now(),
   this.initialYearIndex = lengthOfYear ~/ 2;
 
@@ -19,6 +20,7 @@ class DatePicker extends StatefulWidget {
   final double itemHeight;
   final double diameterRatio;
   final double magnification;
+  final double height;
   final bool useMagnifier;
   final bool isVisibleDay;
   final int lengthOfYear;
@@ -59,6 +61,7 @@ class _DatePickerState extends State<DatePicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: widget.height,
       padding: EdgeInsets.only(),
       child: Column(
         children: [
@@ -106,7 +109,7 @@ class _DatePickerState extends State<DatePicker> {
               children: List.generate(widget.lengthOfYear, (index) =>
                   Center(
                     child: Text(
-                      (_selectedYear - widget.initialYearIndex + index).toString(),
+                      (widget.initDateTime.year - widget.initialYearIndex + index).toString(),
                       style: TextStyle(
                           fontSize: 20,
                           color: Colors.white
@@ -194,7 +197,7 @@ class _DatePickerState extends State<DatePicker> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           FlatButton(
-              onPressed: () {},
+              onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 '취소',
                 style: TextStyle(
@@ -209,7 +212,8 @@ class _DatePickerState extends State<DatePicker> {
             color: Colors.white,
           ),
           FlatButton(
-              onPressed: () {},
+              onPressed: () =>
+                  Navigator.of(context).pop({'dateTime': DateTime(_selectedYear, _selectedMonth, _selectedDay)}),
               child: Text(
                 '완료',
                 style: TextStyle(

@@ -16,11 +16,9 @@ class CalendarApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => DateTimeCubit())
-        ],
-        child: CalendarPageView(),
+      home: BlocProvider(
+          create: (context) => DateTimeCubit(),
+          child: CalendarPageView()
       )
     );
   }

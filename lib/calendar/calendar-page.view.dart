@@ -3,23 +3,22 @@ import 'package:calendar/calendar/content/calendar-day.view.dart';
 import 'package:calendar/calendar/content/calendar-day.viewmodel.dart';
 import 'package:calendar/cubit/datetime-cubit.dart';
 import 'package:calendar/widget/date-picker-widget.dart';
-import 'package:calendar/widget/dialog.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+const int maxYearCount = 100;
 
 class CalendarPageView extends StatelessWidget {
   CalendarPageView(): viewModel = CalendarPageViewModel();
 
   final CalendarPageViewModel viewModel;
-  final int initialPage = 999;
+  final int initialPage = 12 * maxYearCount;
 
   PageController _pageController;
 
   @override
   Widget build(BuildContext context) {
-    _pageController = PageController(initialPage: initialPage);
+    _pageController = PageController(initialPage: initialPage, keepPage: false);
 
     return SafeArea(
       child: Scaffold(
@@ -49,7 +48,7 @@ class CalendarPageView extends StatelessWidget {
             ),
           ),
         ),
-        _getWheelView(),
+        Expanded(flex: 1,child: Container()),
       ],
     );
   }
@@ -57,7 +56,25 @@ class CalendarPageView extends StatelessWidget {
   Widget _getYearAndMonth(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        // PickerDialog(context);
+        showModalBottomSheet(
+            context: context,
+            backgroundColor: Colors.grey,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            builder: (_) => DatePicker(
+              initDateTime: context.read<DateTimeCubit>().dateTime,
+            ),
+        ).then((data) {
+          if(data == null) return;
+
+          context.read<DateTimeCubit>().dateTime = data['dateTime'];
+
+          final int differenceYear = data['dateTime'].year - context.read<DateTimeCubit>().initDateTime.year;
+          final int differenceMonth = data['dateTime'].month - context.read<DateTimeCubit>().initDateTime.month;
+          final int page = (differenceYear * 12) + differenceMonth + initialPage;
+          _pageController.jumpToPage(page);
+        });
       },
       child: BlocBuilder<DateTimeCubit, DateTime>(
         builder: (context, dateTime) {
@@ -100,42 +117,36 @@ class CalendarPageView extends StatelessWidget {
 
   Widget _getDays(BuildContext context) {
     return Expanded(
-      child: PageView.builder(
-        scrollDirection: Axis.horizontal,
-        controller: _pageController,
-        itemBuilder: (context, index) {
-          final int value = index - initialPage;
-          final dateTime = viewModel.getDateTime(month: value);
+      child: BlocBuilder<DateTimeCubit, DateTime>(
+        builder: (context, value) {
+          return PageView.builder(
+            scrollDirection: Axis.horizontal,
+            controller: _pageController,
+            itemBuilder: (context, index) {
+              final int value = index - initialPage;
+              final dateTime = context.read<DateTimeCubit>().pageChangeDateTime(month: value);
 
-          return CalendarDayView(
-            dateTime: dateTime,
-            onChangeSelectedMonth: (calendarMonth) {
-              print(calendarMonth);
-              if(calendarMonth == CalendarMonth.NEXT) {
-                _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
-              } else {
-                _pageController.previousPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
-              }
+              return CalendarDayView(
+                dateTime: dateTime,
+                onChangeSelectedMonth: (calendarMonth) {
+                  print(calendarMonth);
+                  if(calendarMonth == CalendarMonth.NEXT) {
+                    _pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
+                  } else {
+                    _pageController.previousPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
+                  }
+                },
+              );
+            },
+            onPageChanged: (page) {
+              final int value = page - initialPage;
+              final dateTime = context.read<DateTimeCubit>().pageChangeDateTime(month: value);
+
+              context.read<DateTimeCubit>().dateTime = dateTime;
             },
           );
         },
-        onPageChanged: (page) {
-          final int value = page - initialPage;
-          final dateTime = viewModel.getDateTime(month: value);
-
-          context.read<DateTimeCubit>().dateTime = dateTime;
-        },
       ),
-    );
-  }
-
-  _getWheelView() {
-    return Expanded(
-        flex: 1,
-        child: Container(
-          color: Colors.red,
-          child: DatePicker(),
-        )
     );
   }
 }
