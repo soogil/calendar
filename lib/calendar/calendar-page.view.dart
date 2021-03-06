@@ -2,6 +2,9 @@ import 'package:calendar/calendar/calendar-page.viewmodel.dart';
 import 'package:calendar/calendar/content/calendar-day.view.dart';
 import 'package:calendar/calendar/content/calendar-day.viewmodel.dart';
 import 'package:calendar/cubit/datetime-cubit.dart';
+import 'package:calendar/widget/date-picker-widget.dart';
+import 'package:calendar/widget/dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,24 +42,23 @@ class CalendarPageView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _getYearAndMonth(),
+                _getYearAndMonth(context),
                 _getDayOfWeek(),
                 _getDays(context),
               ],
             ),
           ),
         ),
-        Expanded(
-            flex: 1,
-            child: Container()
-        ),
+        _getWheelView(),
       ],
     );
   }
 
-  Widget _getYearAndMonth() {
+  Widget _getYearAndMonth(BuildContext context) {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        // PickerDialog(context);
+      },
       child: BlocBuilder<DateTimeCubit, DateTime>(
         builder: (context, dateTime) {
           return Container(
@@ -124,6 +126,16 @@ class CalendarPageView extends StatelessWidget {
           context.read<DateTimeCubit>().dateTime = dateTime;
         },
       ),
+    );
+  }
+
+  _getWheelView() {
+    return Expanded(
+        flex: 1,
+        child: Container(
+          color: Colors.red,
+          child: DatePicker(),
+        )
     );
   }
 }
