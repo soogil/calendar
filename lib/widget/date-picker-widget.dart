@@ -103,7 +103,7 @@ class _DatePickerState extends State<DatePicker> {
           useMagnifier: widget.useMagnifier,
           magnification: widget.magnification,
           onSelectedItemChanged: (index) {
-            _selectedYear += index - widget.initialYearIndex;
+            _selectedYear = widget.initDateTime.year + (index - widget.initialYearIndex);
           },
           childDelegate: ListWheelChildLoopingListDelegate(
               children: List.generate(widget.lengthOfYear, (index) =>
